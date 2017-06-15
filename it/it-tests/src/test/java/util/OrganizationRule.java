@@ -80,30 +80,20 @@ public class OrganizationRule extends ExternalResource implements OrganizationSu
     return new OrganizationSupportImpl(ItUtils.newUserWsClient(orchestrator, login, password));
   }
 
-  public OrganizationSupport asAnonymous() {
-    return as(null, null);
-  }
-
   @Override
   public OrganizationService getWsService() {
     return rootSupport.getWsService();
   }
 
   @Override
-  public Organization create(Consumer<CreateWsRequest.Builder>... populators) {
+  @SafeVarargs
+  public final Organization create(Consumer<CreateWsRequest.Builder>... populators) {
     return rootSupport.create(populators);
   }
 
   @Override
   public OrganizationSupport delete(Organization organization) {
     return rootSupport.delete(organization);
-  }
-
-  public OrganizationRule assertThatOrganizationDoesNotExist(String organizationKey) {
-    SearchWsRequest request = new SearchWsRequest.Builder().setOrganizations(organizationKey).build();
-    Organizations.SearchWsResponse searchWsResponse = getWsService().search(request);
-    assertThat(searchWsResponse.getOrganizationsList()).isEmpty();
-    return this;
   }
 
   public OrganizationRule assertThatMemberOf(@Nullable Organization organization, WsUsers.CreateWsResponse.User user) {

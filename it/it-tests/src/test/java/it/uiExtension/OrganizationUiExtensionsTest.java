@@ -24,7 +24,6 @@ import com.sonar.orchestrator.Orchestrator;
 import it.Category6Suite;
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
@@ -50,8 +49,7 @@ public class OrganizationUiExtensionsTest {
     .around(organizations)
     .around(userRule);
 
-  @Rule
-  public Navigation nav = Navigation.get(orchestrator);
+  private Navigation nav = Navigation.create(orchestrator);
 
   private String adminUser;
 
@@ -63,7 +61,7 @@ public class OrganizationUiExtensionsTest {
   @Test
   public void organization_page() {
     Organization organization = organizations.create();
-    nav.open("/organizations/" + organization.getKey() + "/projects");
+    Navigation.create(orchestrator).open("/organizations/" + organization.getKey() + "/projects");
 
     $("#organization-navigation-more").click();
     $(By.linkText("Organization Page")).shouldBe(Condition.visible).click();

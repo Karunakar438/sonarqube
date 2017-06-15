@@ -46,8 +46,6 @@ public class UiExtensionsTest {
   @Rule
   public UserRule userRule = UserRule.from(orchestrator);
 
-  @Rule
-  public Navigation nav = Navigation.get(orchestrator);
   private String adminUser;
 
   @BeforeClass
@@ -68,7 +66,7 @@ public class UiExtensionsTest {
 
   @Test
   public void global_page() {
-    nav.open("/about");
+    Navigation.create(orchestrator).open("/about");
 
     // on about page
     $("#global-navigation-more").click();
@@ -80,7 +78,7 @@ public class UiExtensionsTest {
 
   @Test
   public void global_admin_page() {
-    nav.logIn().submitCredentials(adminUser).open("/about");
+    Navigation.create(orchestrator).logIn().submitCredentials(adminUser).open("/about");
 
     $(".navbar-admin-link").click();
     $("#settings-navigation-configuration").click();
@@ -92,7 +90,7 @@ public class UiExtensionsTest {
 
   @Test
   public void project_page() {
-    nav.open("/dashboard?id=sample");
+    Navigation.create(orchestrator).open("/dashboard?id=sample");
 
     $("#component-navigation-more").click();
     $(By.linkText("Project Page")).click();
@@ -103,7 +101,7 @@ public class UiExtensionsTest {
 
   @Test
   public void project_admin_page() {
-    nav.logIn().submitCredentials(adminUser).open("/dashboard?id=sample");
+    Navigation.create(orchestrator).logIn().submitCredentials(adminUser).open("/dashboard?id=sample");
 
     $("#component-navigation-admin").click();
     $(By.linkText("Project Admin Page")).click();
