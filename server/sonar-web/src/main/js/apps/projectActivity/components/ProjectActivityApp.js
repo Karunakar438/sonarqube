@@ -209,7 +209,6 @@ export default class ProjectActivityApp extends React.PureComponent {
     const { query } = this.state;
     const { configuration } = this.props.project;
     const canAdmin = configuration ? configuration.showHistory : false;
-
     return (
       <div id="project-activity" className="page page-limited">
         <Helmet title={translate('project_activity.page')} />

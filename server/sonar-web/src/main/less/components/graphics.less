@@ -120,11 +120,28 @@
   stroke-width: 2px;
 
   &.line-chart-path-1 {
-    stroke: @serieColor1
+    stroke: @serieColor1;
   }
 
   &.line-chart-path-2 {
     stroke: @serieColor2;
+  }
+
+  &:hover {
+    z-index: 120;
+  }
+}
+
+.line-chart-area {
+  fill: fade(@defaultSerieColor, 30%);
+  stroke-width: 0;
+
+  &.line-chart-area-1 {
+    fill: fade(@serieColor1, 30%);
+  }
+
+  &.line-chart-area-2 {
+    fill: fade(@serieColor2, 30%);
   }
 }
 

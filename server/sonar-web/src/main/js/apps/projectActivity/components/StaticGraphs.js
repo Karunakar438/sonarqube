@@ -24,6 +24,7 @@ import AdvancedTimeline from '../../../components/charts/AdvancedTimeline';
 import StaticGraphsLegend from './StaticGraphsLegend';
 import ResizeHelper from '../../../components/common/ResizeHelper';
 import { formatMeasure, getShortType } from '../../../helpers/measures';
+import { generateCoveredLinesMetric } from '../utils';
 import { translate } from '../../../helpers/l10n';
 import type { Analysis, MeasureHistory } from '../types';
 
@@ -56,13 +57,22 @@ export default class StaticGraphs extends React.PureComponent {
   };
 
   getSeries = () =>
-    sortBy(this.props.measuresHistory, 'metric').map(measure => ({
-      name: measure.metric,
-      data: measure.history.map(analysis => ({
-        x: analysis.date,
-        y: this.props.metricsType === 'LEVEL' ? analysis.value : Number(analysis.value)
-      }))
-    }));
+    sortBy(
+      this.props.measuresHistory.map(measure => {
+        if (measure.metric === 'uncovered_lines') {
+          return generateCoveredLinesMetric(measure, this.props.measuresHistory);
+        }
+        return {
+          name: measure.metric,
+          translatedName: translate('metric', measure.metric, 'name'),
+          data: measure.history.map(analysis => ({
+            x: analysis.date,
+            y: this.props.metricsType === 'LEVEL' ? analysis.value : Number(analysis.value)
+          }))
+        };
+      }),
+      'name'
+    );
 
   hasHistoryData = () =>
     some(this.props.measuresHistory, measure => measure.history && measure.history.length > 2);
@@ -106,6 +116,7 @@ export default class StaticGraphs extends React.PureComponent {
               formatYTick={this.formatYTick}
               leakPeriodDate={this.props.leakPeriodDate}
               padding={[25, 25, 30, 60]}
+              showAreas={this.props.showAreas}
             />
           </ResizeHelper>
         </div>
