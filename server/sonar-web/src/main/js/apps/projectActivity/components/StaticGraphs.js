@@ -20,9 +20,9 @@
 import React from 'react';
 import moment from 'moment';
 import { some, sortBy } from 'lodash';
+import { AutoSizer } from 'react-virtualized';
 import AdvancedTimeline from '../../../components/charts/AdvancedTimeline';
 import StaticGraphsLegend from './StaticGraphsLegend';
-import ResizeHelper from '../../../components/common/ResizeHelper';
 import { formatMeasure, getShortType } from '../../../helpers/measures';
 import { generateCoveredLinesMetric } from '../utils';
 import { translate } from '../../../helpers/l10n';
@@ -105,20 +105,23 @@ export default class StaticGraphs extends React.PureComponent {
       <div className="project-activity-graph-container">
         <StaticGraphsLegend series={series} />
         <div className="project-activity-graph">
-          <ResizeHelper>
-            <AdvancedTimeline
-              basisCurve={false}
-              series={series}
-              metricType={this.props.metricsType}
-              events={this.getEvents()}
-              interpolate="linear"
-              formatValue={this.formatValue}
-              formatYTick={this.formatYTick}
-              leakPeriodDate={this.props.leakPeriodDate}
-              padding={[25, 25, 30, 60]}
-              showAreas={this.props.showAreas}
-            />
-          </ResizeHelper>
+          <AutoSizer>
+            {({ height, width }) => (
+              <AdvancedTimeline
+                events={this.getEvents()}
+                height={height}
+                interpolate="linear"
+                formatValue={this.formatValue}
+                formatYTick={this.formatYTick}
+                leakPeriodDate={this.props.leakPeriodDate}
+                metricType={this.props.metricsType}
+                padding={[25, 25, 30, 60]}
+                series={series}
+                showAreas={this.props.showAreas}
+                width={width}
+              />
+            )}
+          </AutoSizer>
         </div>
       </div>
     );

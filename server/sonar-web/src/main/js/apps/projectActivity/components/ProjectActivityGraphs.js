@@ -38,19 +38,17 @@ type Props = {
 export default function ProjectActivityGraphs(props: Props) {
   const { graph } = props.query;
   return (
-    <div className="project-activity-layout-page-main">
-      <div className="project-activity-layout-page-main-inner boxed-group boxed-group-inner">
-        <ProjectActivityGraphsHeader graph={graph} updateQuery={props.updateQuery} />
-        <StaticGraphs
-          analyses={props.analyses}
-          leakPeriodDate={props.leakPeriodDate}
-          loading={props.loading}
-          measuresHistory={props.measuresHistory}
-          metricsType={props.metricsType}
-          project={props.project}
-          showAreas={graph === 'coverage'}
-        />
-      </div>
+    <div className="project-activity-layout-page-main-inner boxed-group boxed-group-inner">
+      <ProjectActivityGraphsHeader graph={graph} updateQuery={props.updateQuery} />
+      <StaticGraphs
+        analyses={props.analyses}
+        leakPeriodDate={props.leakPeriodDate}
+        loading={props.loading}
+        measuresHistory={props.measuresHistory}
+        metricsType={props.metricsType}
+        project={props.project}
+        showAreas={graph === 'coverage'}
+      />
     </div>
   );
 }
