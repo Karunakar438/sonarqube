@@ -24,12 +24,13 @@ import { AutoSizer } from 'react-virtualized';
 import AdvancedTimeline from '../../../components/charts/AdvancedTimeline';
 import StaticGraphsLegend from './StaticGraphsLegend';
 import { formatMeasure, getShortType } from '../../../helpers/measures';
-import { generateCoveredLinesMetric } from '../utils';
+import { EVENT_TYPES_PRIORITY, generateCoveredLinesMetric } from '../utils';
 import { translate } from '../../../helpers/l10n';
 import type { Analysis, MeasureHistory } from '../types';
 
 type Props = {
   analyses: Array<Analysis>,
+  eventFilter: string,
   leakPeriodDate: Date,
   loading: boolean,
   measuresHistory: Array<MeasureHistory>,
@@ -45,16 +46,25 @@ export default class StaticGraphs extends React.PureComponent {
   formatValue = value => formatMeasure(value, this.props.metricsType);
 
   getEvents = () => {
-    const events = this.props.analyses.reduce((acc, analysis) => {
-      return acc.concat(
-        analysis.events.map(event => ({
-          className: event.category,
-          name: event.name,
-          date: moment(analysis.date).toDate()
-        }))
-      );
+    const { analyses, eventFilter } = this.props;
+    const filteredEvents = analyses.reduce((acc, analysis) => {
+      if (analysis.events.length <= 0) {
+        return acc;
+      }
+
+      let event;
+      if (eventFilter) {
+        event = analysis.events.filter(event => event.category === eventFilter)[0];
+      } else {
+        event = sortBy(analysis.events, event => EVENT_TYPES_PRIORITY[event.category])[0];
+      }
+      return acc.concat({
+        className: event.category,
+        name: event.name,
+        date: moment(analysis.date).toDate()
+      });
     }, []);
-    return sortBy(events, 'date');
+    return sortBy(filteredEvents, 'date');
   };
 
   getSeries = () =>

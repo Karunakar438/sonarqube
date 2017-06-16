@@ -23,6 +23,8 @@ import { translate } from '../../helpers/l10n';
 import type { MeasureHistory, Query } from './types';
 import type { RawQuery } from '../../helpers/query';
 
+export const EVENT_TYPES = ['VERSION', 'QUALITY_GATE', 'QUALITY_PROFILE', 'OTHER'];
+export const EVENT_TYPES_PRIORITY = { VERSION: 0, QUALITY_GATE: 1, QUALITY_PROFILE: 2, OTHER: 3 };
 export const GRAPH_TYPES = ['overview', 'coverage', 'duplications', 'remediation'];
 export const GRAPHS_METRICS = {
   overview: ['bugs', 'vulnerabilities', 'code_smells'],

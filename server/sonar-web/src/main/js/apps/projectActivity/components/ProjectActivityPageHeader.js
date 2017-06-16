@@ -20,6 +20,7 @@
 // @flow
 import React from 'react';
 import Select from 'react-select';
+import { EVENT_TYPES } from '../utils';
 import { translate } from '../../../helpers/l10n';
 import type { RawQuery } from '../../../helpers/query';
 
@@ -28,19 +29,29 @@ type Props = {
   category?: string
 };
 
+type State = {
+  options: Array<{ label: string, value: string }>
+};
+
 export default class ProjectActivityPageHeader extends React.PureComponent {
   props: Props;
+  state: State;
+
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      options: EVENT_TYPES.map(category => ({
+        label: translate('event.category', category),
+        value: category
+      }))
+    };
+  }
 
   handleCategoryChange = (option: ?{ value: string }) => {
     this.props.updateQuery({ category: option ? option.value : '' });
   };
 
   render() {
-    const selectOptions = ['VERSION', 'QUALITY_GATE', 'QUALITY_PROFILE', 'OTHER'].map(category => ({
-      label: translate('event.category', category),
-      value: category
-    }));
-
     return (
       <header className="page-header">
         <Select
@@ -49,7 +60,7 @@ export default class ProjectActivityPageHeader extends React.PureComponent {
           clearable={true}
           searchable={false}
           value={this.props.category}
-          options={selectOptions}
+          options={this.state.options}
           onChange={this.handleCategoryChange}
         />
       </header>

@@ -37,12 +37,13 @@ type Props = {
 };
 
 export default function ProjectActivityGraphs(props: Props) {
-  const { graph } = props.query;
+  const { graph, category } = props.query;
   return (
     <div className="project-activity-layout-page-main-inner boxed-group boxed-group-inner">
       <ProjectActivityGraphsHeader graph={graph} updateQuery={props.updateQuery} />
       <StaticGraphs
         analyses={props.analyses}
+        eventFilter={category}
         leakPeriodDate={props.leakPeriodDate}
         loading={props.loading}
         measuresHistory={props.measuresHistory}
