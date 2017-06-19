@@ -52,7 +52,7 @@ export default class AdvancedTimeline extends React.PureComponent {
 
   static defaultProps = {
     eventSize: 8,
-    padding: [10, 10, 10, 10]
+    padding: [25, 25, 30, 70]
   };
 
   getRatingScale = (availableHeight: number) =>
@@ -133,7 +133,7 @@ export default class AdvancedTimeline extends React.PureComponent {
           const nextTick = index + 1 < ticks.length ? ticks[index + 1] : xScale.domain()[1];
           const x = (xScale(tick) + xScale(nextTick)) / 2;
           return (
-            <text key={index} className="line-chart-tick" x={x} y={y} dy="2em">
+            <text key={index} className="line-chart-tick" x={x} y={y} dy="2.3em">
               {format(tick)}
             </text>
           );
@@ -199,16 +199,18 @@ export default class AdvancedTimeline extends React.PureComponent {
     if (!events || !eventSize) {
       return null;
     }
-
+    const inRangeEvents = events.filter(
+      event => event.date >= xScale.domain()[0] && event.date <= xScale.domain()[1]
+    );
     const offset = eventSize / 2;
     return (
       <g>
-        {events.map((event, idx) => (
+        {inRangeEvents.map((event, idx) => (
           <path
             d={this.getEventMarker(eventSize)}
             className={classNames('line-chart-event', event.className)}
             key={`${idx}-${event.date.getTime()}`}
-            transform={`translate(${xScale(event.date) - offset}, ${yScale.range()[0] - offset})`}
+            transform={`translate(${xScale(event.date) - offset}, ${yScale.range()[0] + offset})`}
           />
         ))}
       </g>

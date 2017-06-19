@@ -64,15 +64,7 @@ export const getAllTimeMachineData = (
         }
       : r;
 
-    if (
-      // TODO Remove the sameAsPrevious condition when the webservice paging is working correctly ?
-      // Or keep it to be sure to not have an infinite loop ?
-      result.measures.every((measure, idx) => {
-        const equalToTotal = measure.history.length >= result.paging.total;
-        const sameAsPrevious = prev && measure.history.length === prev.measures[idx].history.length;
-        return equalToTotal || sameAsPrevious;
-      })
-    ) {
+    if (result.paging.pageIndex * result.paging.pageSize >= result.paging.total) {
       return result;
     }
     return getAllTimeMachineData(

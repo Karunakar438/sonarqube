@@ -76,6 +76,12 @@ export const serializeUrlQuery = (query: Query): RawQuery => {
   });
 };
 
+export const activityQueryChanged = (prevQuery: Query, nextQuery: Query): boolean =>
+  prevQuery.category !== nextQuery.category;
+
+export const historyQueryChanged = (prevQuery: Query, nextQuery: Query): boolean =>
+  prevQuery.graph !== nextQuery.graph;
+
 export const generateCoveredLinesMetric = (
   uncoveredLines: MeasureHistory,
   measuresHistory: Array<MeasureHistory>

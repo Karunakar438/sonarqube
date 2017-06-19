@@ -51,12 +51,14 @@ export default class StaticGraphs extends React.PureComponent {
       if (analysis.events.length <= 0) {
         return acc;
       }
-
       let event;
       if (eventFilter) {
         event = analysis.events.filter(event => event.category === eventFilter)[0];
       } else {
         event = sortBy(analysis.events, event => EVENT_TYPES_PRIORITY[event.category])[0];
+      }
+      if (!event) {
+        return acc;
       }
       return acc.concat({
         className: event.category,
@@ -127,7 +129,6 @@ export default class StaticGraphs extends React.PureComponent {
                 formatYTick={this.formatYTick}
                 leakPeriodDate={this.props.leakPeriodDate}
                 metricType={this.props.metricsType}
-                padding={[25, 25, 30, 60]}
                 series={series}
                 showAreas={this.props.showAreas}
                 width={width}

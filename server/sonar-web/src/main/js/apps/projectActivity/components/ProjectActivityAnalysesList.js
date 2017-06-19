@@ -22,10 +22,9 @@ import React from 'react';
 import { groupBy } from 'lodash';
 import moment from 'moment';
 import ProjectActivityAnalysis from './ProjectActivityAnalysis';
-import ProjectActivityPageFooter from './ProjectActivityPageFooter';
 import FormattedDate from '../../../components/ui/FormattedDate';
 import { translate } from '../../../helpers/l10n';
-import type { Analysis, Paging } from '../types';
+import type { Analysis } from '../types';
 
 type Props = {
   addCustomEvent: (analysis: string, name: string, category?: string) => Promise<*>,
@@ -36,9 +35,7 @@ type Props = {
   changeEvent: (event: string, name: string) => Promise<*>,
   deleteAnalysis: (analysis: string) => Promise<*>,
   deleteEvent: (analysis: string, event: string) => Promise<*>,
-  fetchMoreActivity: () => void,
-  loading: boolean,
-  paging?: Paging
+  loading: boolean
 };
 
 export default function ProjectActivityAnalysesList(props: Props) {
@@ -85,12 +82,6 @@ export default function ProjectActivityAnalysesList(props: Props) {
           </li>
         ))}
       </ul>
-
-      <ProjectActivityPageFooter
-        analyses={props.analyses}
-        fetchMoreActivity={props.fetchMoreActivity}
-        paging={props.paging}
-      />
     </div>
   );
 }

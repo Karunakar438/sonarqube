@@ -63,6 +63,7 @@ const newEvent = {
 
 const emptyState = {
   analyses: [],
+  graphLoading: false,
   loading: false,
   measuresHistory: [],
   measures: [],
