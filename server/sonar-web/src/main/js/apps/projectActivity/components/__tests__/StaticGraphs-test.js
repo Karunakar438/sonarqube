@@ -71,6 +71,7 @@ const DEFAULT_PROPS = {
       ]
     }
   ],
+  seriesOrder: ['bugs'],
   metricsType: 'INT'
 };
 

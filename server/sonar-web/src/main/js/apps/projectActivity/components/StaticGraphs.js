@@ -24,7 +24,7 @@ import { AutoSizer } from 'react-virtualized';
 import AdvancedTimeline from '../../../components/charts/AdvancedTimeline';
 import StaticGraphsLegend from './StaticGraphsLegend';
 import { formatMeasure, getShortType } from '../../../helpers/measures';
-import { EVENT_TYPES_PRIORITY, generateCoveredLinesMetric } from '../utils';
+import { EVENT_TYPES, generateCoveredLinesMetric } from '../utils';
 import { translate } from '../../../helpers/l10n';
 import type { Analysis, MeasureHistory } from '../types';
 
@@ -35,7 +35,7 @@ type Props = {
   loading: boolean,
   measuresHistory: Array<MeasureHistory>,
   metricsType: string,
-  seriesStyle?: { [string]: string }
+  seriesOrder: Array<string>
 };
 
 export default class StaticGraphs extends React.PureComponent {
@@ -55,7 +55,7 @@ export default class StaticGraphs extends React.PureComponent {
       if (eventFilter) {
         event = analysis.events.filter(event => event.category === eventFilter)[0];
       } else {
-        event = sortBy(analysis.events, event => EVENT_TYPES_PRIORITY[event.category])[0];
+        event = sortBy(analysis.events, event => EVENT_TYPES.indexOf(event.category))[0];
       }
       if (!event) {
         return acc;
@@ -71,14 +71,14 @@ export default class StaticGraphs extends React.PureComponent {
 
   getSeries = () =>
     sortBy(
-      this.props.measuresHistory.map((measure, idx) => {
+      this.props.measuresHistory.map(measure => {
         if (measure.metric === 'uncovered_lines') {
           return generateCoveredLinesMetric(measure, this.props.measuresHistory);
         }
         return {
           name: measure.metric,
           translatedName: translate('metric', measure.metric, 'name'),
-          style: this.props.seriesStyle ? this.props.seriesStyle[measure.metric] : idx,
+          style: this.props.seriesOrder.indexOf(measure.metric),
           data: measure.history.map(analysis => ({
             x: analysis.date,
             y: this.props.metricsType === 'LEVEL' ? analysis.value : Number(analysis.value)

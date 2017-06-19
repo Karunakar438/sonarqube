@@ -50,10 +50,10 @@ export const getTimeMachineData = (
 export const getAllTimeMachineData = (
   component: string,
   metrics: Array<string>,
-  other?: { p?: number, ps?: number, from?: string, to?: string },
+  other?: { p?: number, from?: string, to?: string },
   prev?: Response
 ): Promise<Response> =>
-  getTimeMachineData(component, metrics, other).then((r: Response) => {
+  getTimeMachineData(component, metrics, { ...other, ps: 1000 }).then((r: Response) => {
     const result = prev
       ? {
           measures: prev.measures.map((measure, idx) => ({

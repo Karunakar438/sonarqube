@@ -30,6 +30,7 @@ type Props = {
   addCustomEvent: (analysis: string, name: string, category?: string) => Promise<*>,
   addVersion: (analysis: string, version: string) => Promise<*>,
   analyses: Array<Analysis>,
+  analysesLoading: boolean,
   canAdmin: boolean,
   className?: string,
   changeEvent: (event: string, name: string) => Promise<*>,
@@ -81,6 +82,7 @@ export default function ProjectActivityAnalysesList(props: Props) {
             </ul>
           </li>
         ))}
+        {props.analysesLoading && <li className="text-center"><i className="spinner" /></li>}
       </ul>
     </div>
   );

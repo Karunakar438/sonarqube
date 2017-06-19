@@ -33,6 +33,7 @@ type Props = {
   addCustomEvent: (analysis: string, name: string, category?: string) => Promise<*>,
   addVersion: (analysis: string, version: string) => Promise<*>,
   analyses: Array<Analysis>,
+  analysesLoading: boolean,
   changeEvent: (event: string, name: string) => Promise<*>,
   deleteAnalysis: (analysis: string) => Promise<*>,
   deleteEvent: (analysis: string, event: string) => Promise<*>,
@@ -57,24 +58,25 @@ export default class ProjectActivityApp extends React.PureComponent {
     this.state = { filteredAnalyses: this.filterAnalyses(props.analyses, props.query) };
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentWillReceiveProps(nextProps: Props) {
     if (
-      prevProps.analyses !== this.props.analyses ||
-      activityQueryChanged(prevProps.query, this.props.query)
+      nextProps.analyses !== this.props.analyses ||
+      activityQueryChanged(this.props.query, nextProps.query)
     ) {
       this.setState({
-        filteredAnalyses: this.filterAnalyses(this.props.analyses, this.props.query)
+        filteredAnalyses: this.filterAnalyses(nextProps.analyses, nextProps.query)
       });
     }
   }
 
-  filterAnalyses = (analyses: Array<Analysis>, query: Query): Array<Analysis> =>
-    analyses.filter(analysis => {
-      if (query.category) {
-        return analysis.events.find(event => event.category === query.category) != null;
-      }
-      return true;
-    });
+  filterAnalyses = (analyses: Array<Analysis>, query: Query): Array<Analysis> => {
+    if (!query.category) {
+      return analyses;
+    }
+    return analyses.filter(
+      analysis => analysis.events.find(event => event.category === query.category) != null
+    );
+  };
 
   getMetricType = () => {
     const metricKey = GRAPHS_METRICS[this.props.query.graph][0];
@@ -98,6 +100,7 @@ export default class ProjectActivityApp extends React.PureComponent {
             <ProjectActivityAnalysesList
               addCustomEvent={this.props.addCustomEvent}
               addVersion={this.props.addVersion}
+              analysesLoading={this.props.analysesLoading}
               analyses={filteredAnalyses}
               canAdmin={canAdmin}
               className="boxed-group-inner"

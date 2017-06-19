@@ -44,7 +44,8 @@ type Props = {
   leakPeriodDate: Date,
   padding: Array<number>,
   series: Array<Serie>,
-  showAreas?: boolean
+  showAreas?: boolean,
+  showEventMarkers?: boolean
 };
 
 export default class AdvancedTimeline extends React.PureComponent {
@@ -133,7 +134,7 @@ export default class AdvancedTimeline extends React.PureComponent {
           const nextTick = index + 1 < ticks.length ? ticks[index + 1] : xScale.domain()[1];
           const x = (xScale(tick) + xScale(nextTick)) / 2;
           return (
-            <text key={index} className="line-chart-tick" x={x} y={y} dy="2.3em">
+            <text key={index} className="line-chart-tick" x={x} y={y} dy="2em">
               {format(tick)}
             </text>
           );
@@ -231,7 +232,7 @@ export default class AdvancedTimeline extends React.PureComponent {
           {this.renderTicks(xScale, yScale)}
           {this.props.showAreas && this.renderAreas(xScale, yScale)}
           {this.renderLines(xScale, yScale)}
-          {this.renderEvents(xScale, yScale)}
+          {this.props.showEventMarkers && this.renderEvents(xScale, yScale)}
         </g>
       </svg>
     );

@@ -29,7 +29,7 @@ import { getAllTimeMachineData } from '../../../api/time-machine';
 import { getMetrics } from '../../../api/metrics';
 import * as api from '../../../api/projectActivity';
 import * as actions from '../actions';
-import { GRAPHS_METRICS, parseQuery, serializeUrlQuery } from '../utils';
+import { GRAPHS_METRICS, parseQuery, serializeQuery, serializeUrlQuery } from '../utils';
 import type { RawQuery } from '../../../helpers/query';
 import type { Analysis, MeasureHistory, Metric, Paging, Query } from '../types';
 
@@ -41,6 +41,7 @@ type Props = {
 
 export type State = {
   analyses: Array<Analysis>,
+  analysesLoading: boolean,
   graphLoading: boolean,
   loading: boolean,
   metrics: Array<Metric>,
@@ -58,6 +59,7 @@ class ProjectActivityAppContainer extends React.PureComponent {
     super(props);
     this.state = {
       analyses: [],
+      analysesLoading: false,
       graphLoading: true,
       loading: true,
       measuresHistory: [],
@@ -128,14 +130,14 @@ class ProjectActivityAppContainer extends React.PureComponent {
 
   fetchActivity = (
     project: string,
-    p?: number
+    p: number,
+    ps: number,
+    additional?: {
+      [string]: string
+    }
   ): Promise<{ analyses: Array<Analysis>, paging: Paging }> => {
-    const parameters = {
-      project,
-      p: p || 1,
-      ps: 100
-    };
-    return api.getProjectActivity(parameters).catch(throwGlobalError);
+    const parameters = { project, p, ps };
+    return api.getProjectActivity({ ...parameters, ...additional }).catch(throwGlobalError);
   };
 
   fetchMeasuresHistory = (metrics: Array<string>): Promise<Array<MeasureHistory>> =>
@@ -153,18 +155,25 @@ class ProjectActivityAppContainer extends React.PureComponent {
 
   fetchMetrics = (): Promise<Array<Metric>> => getMetrics().catch(throwGlobalError);
 
-  loadRemainingActivities = (project: string, prevPaging: Paging): Promise<void> => {
-    if (!prevPaging || prevPaging.pageIndex * prevPaging.pageSize >= prevPaging.total) {
-      return Promise.resolve();
+  loadAllActivities = (
+    project: string,
+    prevResult?: { analyses: Array<Analysis>, paging: Paging }
+  ): Promise<{ analyses: Array<Analysis>, paging: Paging }> => {
+    if (
+      prevResult &&
+      prevResult.paging.pageIndex * prevResult.paging.pageSize >= prevResult.paging.total
+    ) {
+      return Promise.resolve(prevResult);
     }
-    return this.fetchActivity(project, prevPaging.pageIndex + 1).then(({ analyses, paging }) => {
-      if (this.mounted) {
-        this.setState((state: State) => ({
-          analyses: state.analyses ? state.analyses.concat(analyses) : analyses,
-          paging
-        }));
-        return this.loadRemainingActivities(project, paging);
+    const nextPage = prevResult ? prevResult.paging.pageIndex + 1 : 1;
+    return this.fetchActivity(project, nextPage, 500).then(result => {
+      if (!prevResult) {
+        return this.loadAllActivities(project, result);
       }
+      return this.loadAllActivities(project, {
+        analyses: prevResult.analyses.concat(result.analyses),
+        paging: result.paging
+      });
     });
   };
 
@@ -172,20 +181,30 @@ class ProjectActivityAppContainer extends React.PureComponent {
     const { query } = this.state;
     const graphMetrics = GRAPHS_METRICS[query.graph];
     Promise.all([
-      this.fetchActivity(query.project),
+      this.fetchActivity(query.project, 1, 100, serializeQuery(query)),
       this.fetchMetrics(),
       this.fetchMeasuresHistory(graphMetrics)
     ]).then(response => {
       if (this.mounted) {
         this.setState({
           analyses: response[0].analyses,
+          analysesLoading: true,
           graphLoading: false,
           loading: false,
           metrics: response[1],
           measuresHistory: response[2],
           paging: response[0].paging
         });
-        this.loadRemainingActivities(query.project, response[0].paging);
+
+        this.loadAllActivities(query.project).then(({ analyses, paging }) => {
+          if (this.mounted) {
+            this.setState({
+              analyses,
+              analysesLoading: false,
+              paging
+            });
+          }
+        });
       }
     });
   }
@@ -218,6 +237,7 @@ class ProjectActivityAppContainer extends React.PureComponent {
         addCustomEvent={this.addCustomEvent}
         addVersion={this.addVersion}
         analyses={this.state.analyses}
+        analysesLoading={this.state.analysesLoading}
         changeEvent={this.changeEvent}
         deleteAnalysis={this.deleteAnalysis}
         deleteEvent={this.deleteEvent}

@@ -24,29 +24,12 @@ import type { MeasureHistory, Query } from './types';
 import type { RawQuery } from '../../helpers/query';
 
 export const EVENT_TYPES = ['VERSION', 'QUALITY_GATE', 'QUALITY_PROFILE', 'OTHER'];
-export const EVENT_TYPES_PRIORITY = { VERSION: 0, QUALITY_GATE: 1, QUALITY_PROFILE: 2, OTHER: 3 };
 export const GRAPH_TYPES = ['overview', 'coverage', 'duplications', 'remediation'];
 export const GRAPHS_METRICS = {
-  overview: ['bugs', 'vulnerabilities', 'code_smells'],
+  overview: ['bugs', 'code_smells', 'vulnerabilities'],
   coverage: ['uncovered_lines', 'lines_to_cover'],
   duplications: ['duplicated_lines', 'ncloc'],
-  remediation: ['reliability_remediation_effort', 'security_remediation_effort', 'sqale_index']
-};
-export const GRAPHS_METRICS_STYLE = {
-  overview: { bugs: '0', code_smells: '1', vulnerabilities: '2' },
-  coverage: {
-    lines_to_cover: '1',
-    uncovered_lines: '0'
-  },
-  duplications: {
-    duplicated_lines: '0',
-    ncloc: '1'
-  },
-  remediation: {
-    reliability_remediation_effort: '0',
-    security_remediation_effort: '2',
-    sqale_index: '1'
-  }
+  remediation: ['reliability_remediation_effort', 'sqale_index', 'security_remediation_effort']
 };
 
 const parseGraph = (value?: string): string => {

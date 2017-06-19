@@ -29,22 +29,16 @@ type Props = {
   category?: string
 };
 
-type State = {
-  options: Array<{ label: string, value: string }>
-};
-
 export default class ProjectActivityPageHeader extends React.PureComponent {
+  options: Array<{ label: string, value: string }>;
   props: Props;
-  state: State;
 
   constructor(props: Props) {
     super(props);
-    this.state = {
-      options: EVENT_TYPES.map(category => ({
-        label: translate('event.category', category),
-        value: category
-      }))
-    };
+    this.options = EVENT_TYPES.map(category => ({
+      label: translate('event.category', category),
+      value: category
+    }));
   }
 
   handleCategoryChange = (option: ?{ value: string }) => {
@@ -60,7 +54,7 @@ export default class ProjectActivityPageHeader extends React.PureComponent {
           clearable={true}
           searchable={false}
           value={this.props.category}
-          options={this.state.options}
+          options={this.options}
           onChange={this.handleCategoryChange}
         />
       </header>
