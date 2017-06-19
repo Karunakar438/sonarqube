@@ -353,7 +353,7 @@ public class UserUpdater {
     UserDto res = dbClient.userDao().insert(dbSession, userDto);
     addUserToDefaultOrganizationAndDefaultGroup(dbSession, userDto);
     organizationCreation.createForUser(dbSession, userDto);
-    esJournal.checkin(dbSession, new EsJournalDto().setDocUuid(userDto.getLogin()).setType("user"));
+    esJournal.checkin(dbSession, new EsJournalDto().setDocUuid(userDto.getLogin()).setDocType("user"));
     dbSession.commit();
 //    userIndexer.index(userDto.getLogin());
     return res;
@@ -363,7 +363,7 @@ public class UserUpdater {
     long now = system2.now();
     userDto.setActive(true).setUpdatedAt(now);
     dbClient.userDao().update(dbSession, userDto);
-    esJournal.checkin(dbSession, new EsJournalDto().setDocUuid(userDto.getLogin()).setType("user"));
+    esJournal.checkin(dbSession, new EsJournalDto().setDocUuid(userDto.getLogin()).setDocType("user"));
     dbSession.commit();
 //    userIndexer.index(userDto.getLogin());
   }

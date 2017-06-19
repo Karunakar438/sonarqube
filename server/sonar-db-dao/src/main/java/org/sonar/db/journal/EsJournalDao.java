@@ -19,21 +19,28 @@
  */
 package org.sonar.db.journal;
 
+import javax.annotation.CheckForNull;
 import org.sonar.core.util.Uuids;
 import org.sonar.db.Dao;
 import org.sonar.db.DbSession;
 
 public class EsJournalDao implements Dao {
-  public EsJournalDto selectNextEntry(DbSession session) {
-    return session.getMapper(EsJournalMapper.class).selectNextEntry();
+
+  @CheckForNull
+  public EsJournalDto selectNextEntry(DbSession dbSession) {
+    return mapper(dbSession).selectNextEntry();
   }
 
-  public void insert(DbSession session, EsJournalDto esJournalDto) {
+  public void insert(DbSession dbSession, EsJournalDto esJournalDto) {
     esJournalDto.setUuid(Uuids.create());
-    session.getMapper(EsJournalMapper.class).insert(esJournalDto);
+    mapper(dbSession).insert(esJournalDto);
   }
 
-  public void delete(DbSession session, String uuid) {
-    session.getMapper(EsJournalMapper.class).delete(uuid);
+  public void delete(DbSession dbSession, String uuid) {
+    mapper(dbSession).delete(uuid);
+  }
+
+  private static EsJournalMapper mapper(DbSession dbSession) {
+    return dbSession.getMapper(EsJournalMapper.class);
   }
 }

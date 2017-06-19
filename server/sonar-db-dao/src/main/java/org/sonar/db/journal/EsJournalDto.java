@@ -23,7 +23,7 @@ public final class EsJournalDto {
 
   private String uuid;
   private String docUuid;
-  private String type;
+  private String docType;
 
   public String getUuid() {
     return uuid;
@@ -38,17 +38,17 @@ public final class EsJournalDto {
     return docUuid;
   }
 
-  public EsJournalDto setDocUuid(String doc_uuid) {
-    this.docUuid = doc_uuid;
+  public EsJournalDto setDocUuid(String s) {
+    this.docUuid = s;
     return this;
   }
 
-  public String getType() {
-    return type;
+  public String getDocType() {
+    return docType;
   }
 
-  public EsJournalDto setType(String type) {
-    this.type = type;
+  public EsJournalDto setDocType(String s) {
+    this.docType = s;
     return this;
   }
 }

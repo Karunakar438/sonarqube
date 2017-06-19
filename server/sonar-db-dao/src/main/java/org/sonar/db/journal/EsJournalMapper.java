@@ -19,12 +19,14 @@
  */
 package org.sonar.db.journal;
 
+import javax.annotation.CheckForNull;
 import org.apache.ibatis.annotations.Param;
 
 public interface EsJournalMapper {
+  @CheckForNull
   EsJournalDto selectNextEntry();
 
-  void insert(@Param("esJournalDto") EsJournalDto template);
+  void insert(@Param("dto") EsJournalDto dto);
 
   void delete(@Param("uuid") String uuid);
 

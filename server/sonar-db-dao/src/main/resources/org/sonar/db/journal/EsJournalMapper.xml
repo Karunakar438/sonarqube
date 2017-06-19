@@ -11,19 +11,27 @@
   </sql>
 
   <insert id="insert" parameterType="org.sonar.db.journal.EsJournalDto" useGeneratedKeys="false">
-    INSERT INTO es_journal (uuid, doc_type, doc_uuid)
-    VALUES (#{uuid,jdbcType=VARCHAR}, #{docType,jdbcType=VARCHAR}, #{docUuid,jdbcType=VARCHAR})
+    INSERT INTO es_journal (
+      uuid,
+      doc_type,
+      doc_uuid
+    ) VALUES (
+      #{dto.uuid,jdbcType=VARCHAR},
+      #{dto.docType,jdbcType=VARCHAR},
+      #{dto.docUuid,jdbcType=VARCHAR}
+    )
   </insert>
 
   <delete id="delete" parameterType="string">
-    delete from es_journal where uuid=#{uuid, jdbcType=VARCHAR}
+    delete from es_journal
+    where uuid = #{uuid, jdbcType=VARCHAR}
   </delete>
 
   <select id="selectByUuid" parameterType="String" resultType="org.sonar.db.journal.EsJournalDto">
     select
     <include refid="esJournalColumns"/>
     from es_journal
-    where uuid=#{uuid,jdbcType=VARCHAR}
+    where uuid = #{uuid,jdbcType=VARCHAR}
   </select>
 
   <select id="selectNextEntry" resultType="org.sonar.db.journal.EsJournalDto">
