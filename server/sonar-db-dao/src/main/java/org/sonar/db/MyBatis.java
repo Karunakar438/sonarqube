@@ -55,6 +55,7 @@ import org.sonar.db.issue.IssueChangeDto;
 import org.sonar.db.issue.IssueChangeMapper;
 import org.sonar.db.issue.IssueDto;
 import org.sonar.db.issue.IssueMapper;
+import org.sonar.db.journal.EsJournalMapper;
 import org.sonar.db.loadedtemplate.LoadedTemplateDto;
 import org.sonar.db.loadedtemplate.LoadedTemplateMapper;
 import org.sonar.db.measure.MeasureDto;
@@ -197,6 +198,7 @@ public class MyBatis implements Startable {
       CustomMeasureMapper.class,
       DefaultQProfileMapper.class,
       DuplicationMapper.class,
+      EsJournalMapper.class,
       EventMapper.class,
       FileSourceMapper.class,
       GroupMapper.class,

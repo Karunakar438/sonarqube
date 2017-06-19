@@ -17,24 +17,38 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+package org.sonar.db.journal;
 
-package org.sonar.server.platform.db.migration.version.v65;
+public final class EsJournalDto {
 
-import org.junit.Test;
+  private String uuid;
+  private String docUuid;
+  private String type;
 
-import static org.sonar.server.platform.db.migration.version.DbVersionTestUtils.verifyMigrationCount;
-import static org.sonar.server.platform.db.migration.version.DbVersionTestUtils.verifyMinimumMigrationNumber;
-
-public class DbVersion65Test {
-  private DbVersion65 underTest = new DbVersion65();
-
-  @Test
-  public void migrationNumber_starts_at_1700() {
-    verifyMinimumMigrationNumber(underTest, 1700);
+  public String getUuid() {
+    return uuid;
   }
 
-  @Test
-  public void verify_migration_count() {
-    verifyMigrationCount(underTest, 31);
+  EsJournalDto setUuid(String uuid) {
+    this.uuid = uuid;
+    return this;
+  }
+
+  public String getDocUuid() {
+    return docUuid;
+  }
+
+  public EsJournalDto setDocUuid(String doc_uuid) {
+    this.docUuid = doc_uuid;
+    return this;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public EsJournalDto setType(String type) {
+    this.type = type;
+    return this;
   }
 }

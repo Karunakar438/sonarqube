@@ -27,6 +27,7 @@ import org.sonar.api.config.MapSettings;
 import org.sonar.api.utils.System2;
 import org.sonar.db.DbTester;
 import org.sonar.server.es.EsTester;
+import org.sonar.server.es.journal.EsJournal;
 import org.sonar.server.exceptions.BadRequestException;
 import org.sonar.server.exceptions.ForbiddenException;
 import org.sonar.server.exceptions.NotFoundException;
@@ -64,7 +65,8 @@ public class ChangePasswordActionTest {
     organizationFlags,
     TestDefaultOrganizationProvider.from(db),
     mock(OrganizationCreation.class),
-    new DefaultGroupFinder(db.getDbClient()));
+    new DefaultGroupFinder(db.getDbClient()),
+    mock(EsJournal.class));
 
   private WsTester tester = new WsTester(new UsersWs(new ChangePasswordAction(db.getDbClient(), userUpdater, userSessionRule)));
 

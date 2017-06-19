@@ -34,6 +34,7 @@ import org.sonar.db.duplication.DuplicationDao;
 import org.sonar.db.event.EventDao;
 import org.sonar.db.issue.IssueChangeDao;
 import org.sonar.db.issue.IssueDao;
+import org.sonar.db.journal.EsJournalDao;
 import org.sonar.db.loadedtemplate.LoadedTemplateDao;
 import org.sonar.db.measure.MeasureDao;
 import org.sonar.db.measure.custom.CustomMeasureDao;
@@ -118,6 +119,7 @@ public class DbClient {
   private final UserPermissionDao userPermissionDao;
   private final WebhookDeliveryDao webhookDeliveryDao;
   private final DefaultQProfileDao defaultQProfileDao;
+  private final EsJournalDao esJournalDao;
 
   public DbClient(Database database, MyBatis myBatis, Dao... daos) {
     this.database = database;
@@ -173,6 +175,7 @@ public class DbClient {
     userPermissionDao = getDao(map, UserPermissionDao.class);
     webhookDeliveryDao = getDao(map, WebhookDeliveryDao.class);
     defaultQProfileDao = getDao(map, DefaultQProfileDao.class);
+    esJournalDao = getDao(map, EsJournalDao.class);
   }
 
   public DbSession openSession(boolean batch) {
@@ -366,6 +369,8 @@ public class DbClient {
   public DefaultQProfileDao defaultQProfileDao() {
     return defaultQProfileDao;
   }
+
+  public EsJournalDao esJournalDao() { return esJournalDao; }
 
   protected <K extends Dao> K getDao(Map<Class, Dao> map, Class<K> clazz) {
     return (K) map.get(clazz);

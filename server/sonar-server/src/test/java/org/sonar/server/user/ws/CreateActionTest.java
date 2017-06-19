@@ -35,6 +35,7 @@ import org.sonar.db.DbTester;
 import org.sonar.db.user.GroupDto;
 import org.sonar.db.user.UserDto;
 import org.sonar.server.es.EsTester;
+import org.sonar.server.es.journal.EsJournal;
 import org.sonar.server.exceptions.ForbiddenException;
 import org.sonar.server.organization.DefaultOrganizationProvider;
 import org.sonar.server.organization.OrganizationCreation;
@@ -87,7 +88,7 @@ public class CreateActionTest {
   private WsActionTester tester = new WsActionTester(new CreateAction(
     db.getDbClient(),
     new UserUpdater(mock(NewUserNotifier.class), db.getDbClient(), userIndexer, system2, organizationFlags, defaultOrganizationProvider,
-      organizationCreation, new DefaultGroupFinder(db.getDbClient())),
+      organizationCreation, new DefaultGroupFinder(db.getDbClient()),mock(EsJournal.class)),
     userSessionRule));
 
   @Before

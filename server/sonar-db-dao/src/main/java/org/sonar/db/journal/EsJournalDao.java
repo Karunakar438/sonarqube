@@ -17,24 +17,23 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+package org.sonar.db.journal;
 
-package org.sonar.server.platform.db.migration.version.v65;
+import org.sonar.core.util.Uuids;
+import org.sonar.db.Dao;
+import org.sonar.db.DbSession;
 
-import org.junit.Test;
-
-import static org.sonar.server.platform.db.migration.version.DbVersionTestUtils.verifyMigrationCount;
-import static org.sonar.server.platform.db.migration.version.DbVersionTestUtils.verifyMinimumMigrationNumber;
-
-public class DbVersion65Test {
-  private DbVersion65 underTest = new DbVersion65();
-
-  @Test
-  public void migrationNumber_starts_at_1700() {
-    verifyMinimumMigrationNumber(underTest, 1700);
+public class EsJournalDao implements Dao {
+  public EsJournalDto selectNextEntry(DbSession session) {
+    return session.getMapper(EsJournalMapper.class).selectNextEntry();
   }
 
-  @Test
-  public void verify_migration_count() {
-    verifyMigrationCount(underTest, 31);
+  public void insert(DbSession session, EsJournalDto esJournalDto) {
+    esJournalDto.setUuid(Uuids.create());
+    session.getMapper(EsJournalMapper.class).insert(esJournalDto);
+  }
+
+  public void delete(DbSession session, String uuid) {
+    session.getMapper(EsJournalMapper.class).delete(uuid);
   }
 }

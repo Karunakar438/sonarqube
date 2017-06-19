@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.sonar.db.journal.EsJournalMapper">
+
+  <sql id="esJournalColumns">
+    uuid,
+    doc_type as docType,
+    doc_uuid as docUuid
+  </sql>
+
+  <insert id="insert" parameterType="org.sonar.db.journal.EsJournalDto" useGeneratedKeys="false">
+    INSERT INTO es_journal (uuid, doc_type, doc_uuid)
+    VALUES (#{uuid,jdbcType=VARCHAR}, #{docType,jdbcType=VARCHAR}, #{docUuid,jdbcType=VARCHAR})
+  </insert>
+
+  <delete id="delete" parameterType="string">
+    delete from es_journal where uuid=#{uuid, jdbcType=VARCHAR}
+  </delete>
+
+  <select id="selectByUuid" parameterType="String" resultType="org.sonar.db.journal.EsJournalDto">
+    select
+    <include refid="esJournalColumns"/>
+    from es_journal
+    where uuid=#{uuid,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectNextEntry" resultType="org.sonar.db.journal.EsJournalDto">
+    select
+    <include refid="esJournalColumns"/>
+    from es_journal
+    limit 1
+  </select>
+
+</mapper>
+

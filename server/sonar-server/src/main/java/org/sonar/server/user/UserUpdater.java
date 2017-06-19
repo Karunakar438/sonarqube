@@ -34,10 +34,12 @@ import org.sonar.api.utils.System2;
 import org.sonar.core.util.stream.MoreCollectors;
 import org.sonar.db.DbClient;
 import org.sonar.db.DbSession;
+import org.sonar.db.journal.EsJournalDto;
 import org.sonar.db.organization.OrganizationMemberDto;
 import org.sonar.db.user.GroupDto;
 import org.sonar.db.user.UserDto;
 import org.sonar.db.user.UserGroupDto;
+import org.sonar.server.es.journal.EsJournal;
 import org.sonar.server.organization.DefaultOrganizationProvider;
 import org.sonar.server.organization.OrganizationCreation;
 import org.sonar.server.organization.OrganizationFlags;
@@ -76,9 +78,10 @@ public class UserUpdater {
   private final DefaultOrganizationProvider defaultOrganizationProvider;
   private final OrganizationCreation organizationCreation;
   private final DefaultGroupFinder defaultGroupFinder;
+  private final EsJournal esJournal;
 
   public UserUpdater(NewUserNotifier newUserNotifier, DbClient dbClient, UserIndexer userIndexer, System2 system2, OrganizationFlags organizationFlags,
-    DefaultOrganizationProvider defaultOrganizationProvider, OrganizationCreation organizationCreation, DefaultGroupFinder defaultGroupFinder) {
+    DefaultOrganizationProvider defaultOrganizationProvider, OrganizationCreation organizationCreation, DefaultGroupFinder defaultGroupFinder, EsJournal esJournal) {
     this.newUserNotifier = newUserNotifier;
     this.dbClient = dbClient;
     this.userIndexer = userIndexer;
@@ -87,6 +90,7 @@ public class UserUpdater {
     this.defaultOrganizationProvider = defaultOrganizationProvider;
     this.organizationCreation = organizationCreation;
     this.defaultGroupFinder = defaultGroupFinder;
+    this.esJournal = esJournal;
   }
 
   public UserDto create(DbSession dbSession, NewUser newUser) {
@@ -349,8 +353,9 @@ public class UserUpdater {
     UserDto res = dbClient.userDao().insert(dbSession, userDto);
     addUserToDefaultOrganizationAndDefaultGroup(dbSession, userDto);
     organizationCreation.createForUser(dbSession, userDto);
+    esJournal.checkin(dbSession, new EsJournalDto().setDocUuid(userDto.getLogin()).setType("user"));
     dbSession.commit();
-    userIndexer.index(userDto.getLogin());
+//    userIndexer.index(userDto.getLogin());
     return res;
   }
 
@@ -358,8 +363,9 @@ public class UserUpdater {
     long now = system2.now();
     userDto.setActive(true).setUpdatedAt(now);
     dbClient.userDao().update(dbSession, userDto);
+    esJournal.checkin(dbSession, new EsJournalDto().setDocUuid(userDto.getLogin()).setType("user"));
     dbSession.commit();
-    userIndexer.index(userDto.getLogin());
+//    userIndexer.index(userDto.getLogin());
   }
 
   private static void setEncryptedPassWord(String password, UserDto userDto) {

@@ -40,6 +40,7 @@ import org.sonar.db.DbTester;
 import org.sonar.db.user.GroupDto;
 import org.sonar.db.user.UserDto;
 import org.sonar.server.authentication.event.AuthenticationEvent;
+import org.sonar.server.es.journal.EsJournal;
 import org.sonar.server.organization.DefaultOrganizationProvider;
 import org.sonar.server.organization.OrganizationCreation;
 import org.sonar.server.organization.TestDefaultOrganizationProvider;
@@ -102,7 +103,7 @@ public class SsoAuthenticatorTest {
   private UserIdentityAuthenticator userIdentityAuthenticator = new UserIdentityAuthenticator(
     db.getDbClient(),
     new UserUpdater(mock(NewUserNotifier.class), db.getDbClient(), mock(UserIndexer.class), System2.INSTANCE, organizationFlags, defaultOrganizationProvider, organizationCreation,
-      new DefaultGroupFinder(db.getDbClient())),
+      new DefaultGroupFinder(db.getDbClient()), mock(EsJournal.class)),
     defaultOrganizationProvider, organizationFlags, new DefaultGroupFinder(db.getDbClient()));
 
   private HttpServletResponse response = mock(HttpServletResponse.class);

@@ -18,23 +18,19 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.sonar.server.platform.db.migration.version.v65;
+package org.sonar.server.es.journal;
 
-import org.junit.Test;
+import java.util.Optional;
+import org.sonar.api.server.ServerSide;
+import org.sonar.db.DbSession;
+import org.sonar.db.journal.EsJournalDto;
 
-import static org.sonar.server.platform.db.migration.version.DbVersionTestUtils.verifyMigrationCount;
-import static org.sonar.server.platform.db.migration.version.DbVersionTestUtils.verifyMinimumMigrationNumber;
+@ServerSide
+public interface EsJournal {
 
-public class DbVersion65Test {
-  private DbVersion65 underTest = new DbVersion65();
+  void checkin(DbSession dbSession, EsJournalDto esJournalDto);
 
-  @Test
-  public void migrationNumber_starts_at_1700() {
-    verifyMinimumMigrationNumber(underTest, 1700);
-  }
+  Optional<EsJournalDto> checkout(DbSession dbSession);
 
-  @Test
-  public void verify_migration_count() {
-    verifyMigrationCount(underTest, 31);
-  }
+  void release(DbSession dbSession, EsJournalDto esJournalDto);
 }

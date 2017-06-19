@@ -18,23 +18,33 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.sonar.server.platform.db.migration.version.v65;
+package org.sonar.server.es.journal;
 
-import org.junit.Test;
+import java.util.Optional;
+import org.sonar.db.DbClient;
+import org.sonar.db.DbSession;
+import org.sonar.db.journal.EsJournalDto;
 
-import static org.sonar.server.platform.db.migration.version.DbVersionTestUtils.verifyMigrationCount;
-import static org.sonar.server.platform.db.migration.version.DbVersionTestUtils.verifyMinimumMigrationNumber;
+public class EsJournalImpl implements EsJournal {
 
-public class DbVersion65Test {
-  private DbVersion65 underTest = new DbVersion65();
+  private final DbClient dbClient;
 
-  @Test
-  public void migrationNumber_starts_at_1700() {
-    verifyMinimumMigrationNumber(underTest, 1700);
+  public EsJournalImpl(DbClient dbClient) {
+    this.dbClient = dbClient;
   }
 
-  @Test
-  public void verify_migration_count() {
-    verifyMigrationCount(underTest, 31);
+  @Override
+  public void checkin(DbSession dbSession, EsJournalDto esJournalDto) {
+    dbClient.esJournalDao().insert(dbSession, esJournalDto);
+  }
+
+  @Override
+  public Optional<EsJournalDto> checkout(DbSession dbSession) {
+    return Optional.ofNullable(dbClient.esJournalDao().selectNextEntry(dbSession));
+  }
+
+  @Override
+  public void release(DbSession dbSession, EsJournalDto esJournalDto) {
+    dbClient.esJournalDao().delete(dbSession, esJournalDto.getUuid());
   }
 }

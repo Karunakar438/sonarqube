@@ -54,6 +54,7 @@ public final class SqTables {
     "ce_scanner_context",
     "default_qprofiles",
     "duplications_index",
+    "es_journal",
     "events",
     "file_sources",
     "groups",
