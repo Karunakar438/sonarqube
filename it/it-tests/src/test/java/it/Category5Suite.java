@@ -19,6 +19,7 @@
  */
 package it;
 
+import it.qualityProfile.BuiltInQualityProfilesNotificationTest;
 import it.serverSystem.ClusterTest;
 import it.serverSystem.RestartTest;
 import it.serverSystem.ServerSystemRestartingOrchestrator;
@@ -45,7 +46,8 @@ import org.junit.runners.Suite;
   // update center
   UpdateCenterTest.class,
   RealmAuthenticationTest.class,
-  SsoAuthenticationTest.class
+  SsoAuthenticationTest.class,
+  BuiltInQualityProfilesNotificationTest.class
 })
 public class Category5Suite {
 
