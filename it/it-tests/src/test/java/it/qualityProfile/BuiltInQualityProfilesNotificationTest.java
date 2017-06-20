@@ -134,7 +134,9 @@ public class BuiltInQualityProfilesNotificationTest {
     assertThat(smtpServer.getMessages())
       .extracting(this::getMimeMessage)
       .extracting(this::getContent)
-      .extracting(m -> m.contains("This is a test message from SonarQube"))
+      .extracting(m -> m.contains("Built-in quality profiles have been updated:\n" +
+        "\"Basic\" - Foo\n" +
+        "This is a good time to review your quality profiles and update them to benefit from the latest evolutions."))
       .containsOnly(true);
   }
 
