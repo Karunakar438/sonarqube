@@ -47,7 +47,7 @@ public class CreateJournalTableTest {
     assertThat(db.countRowsOfTable(TABLE)).isEqualTo(0);
 
     db.assertColumnDefinition(TABLE, "uuid", Types.VARCHAR, 40, false);
-    db.assertColumnDefinition(TABLE, "type", Types.VARCHAR, 40, false);
+    db.assertColumnDefinition(TABLE, "doc_type", Types.VARCHAR, 40, false);
     db.assertColumnDefinition(TABLE, "doc_uuid", Types.VARCHAR, 40, false);
   }
 }
