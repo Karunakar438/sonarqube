@@ -20,8 +20,9 @@
 
 package org.sonar.server.qualityprofile;
 
-import org.sonar.api.notifications.Notification;
+import java.util.List;
 import org.sonar.server.notification.NotificationManager;
+import org.sonar.server.qualityprofile.BuiltInQualityProfilesNotification.Profile;
 
 public class BuiltInQualityProfilesNotificationSender {
 
@@ -33,10 +34,11 @@ public class BuiltInQualityProfilesNotificationSender {
     this.notificationManager = notificationManager;
   }
 
-  void send() {
-    // TODO get AcriveRuleChange and convert it to BuiltInQualityProfilesNotification -> Notification
-    notificationManager.scheduleForSending(
-      new Notification(BUILT_IN_QUALITY_PROFILES)
-        .setDefaultMessage("This is a test message from SonarQube"));
+  void send(List<QProfileName> changedProfiles) {
+    BuiltInQualityProfilesNotification notification = new BuiltInQualityProfilesNotification();
+    changedProfiles.stream()
+      .map(changedProfile ->new Profile(changedProfile.getName(), changedProfile.getLanguage()))
+      .forEach(notification::addProfile);
+    notificationManager.scheduleForSending(notification.serialize());
   }
 }

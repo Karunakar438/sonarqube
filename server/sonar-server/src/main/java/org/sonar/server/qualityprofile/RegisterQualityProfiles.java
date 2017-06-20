@@ -70,17 +70,20 @@ public class RegisterQualityProfiles {
 
       Map<QProfileName, RulesProfileDto> persistedRuleProfiles = loadPersistedProfiles(dbSession);
 
-      List<ActiveRuleChange> changes = new ArrayList<>();
+      List<QProfileName> changedProfiles = new ArrayList<>();
       builtInQProfiles.forEach(builtIn -> {
         RulesProfileDto ruleProfile = persistedRuleProfiles.get(builtIn.getQProfileName());
         if (ruleProfile == null) {
           register(dbSession, batchDbSession, builtIn);
         } else {
-          changes.addAll(update(dbSession, builtIn, ruleProfile));
+          List<ActiveRuleChange> changes = update(dbSession, builtIn, ruleProfile);
+          if (!changes.isEmpty()) {
+            changedProfiles.add(builtIn.getQProfileName());
+          }
         }
       });
-      if (!changes.isEmpty()) {
-        builtInQualityProfilesNotification.send();
+      if (!changedProfiles.isEmpty()) {
+        builtInQualityProfilesNotification.send(changedProfiles);
       }
     }
     profiler.stopDebug();
