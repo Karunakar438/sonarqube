@@ -21,11 +21,27 @@
 package org.sonar.server.qualityprofile;
 
 import org.junit.Test;
+import org.sonar.plugins.emailnotifications.api.EmailMessage;
+import org.sonar.server.qualityprofile.BuiltInQualityProfilesNotification.Profile;
+
+import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BuiltInQualityProfilesNotificationTemplateTest {
 
-  @Test
-  public void notification_contains() {
+  private BuiltInQualityProfilesNotificationTemplate underTest = new BuiltInQualityProfilesNotificationTemplate();
 
+  @Test
+  public void notification_contains_list_of_quality_profiles() {
+    String profileName = randomAlphanumeric(20);
+    String language = randomAlphanumeric(20);
+    BuiltInQualityProfilesNotification notification = new BuiltInQualityProfilesNotification()
+      .addProfile(new Profile(profileName, language));
+
+    EmailMessage emailMessage = underTest.format(notification.serialize());
+
+    assertThat(emailMessage.getMessage()).isEqualTo("Built-in quality profiles have been updated:\n" +
+      "\"" + profileName + "\" - " + language + "\n" +
+      "This is a good time to review your quality profiles and update them to benefit from the latest evolutions.");
   }
 }

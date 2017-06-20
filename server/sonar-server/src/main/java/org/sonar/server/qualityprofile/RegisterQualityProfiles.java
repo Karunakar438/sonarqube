@@ -46,11 +46,11 @@ public class RegisterQualityProfiles {
   private final DbClient dbClient;
   private final BuiltInQProfileInsert builtInQProfileInsert;
   private final BuiltInQProfileUpdate builtInQProfileUpdate;
-  private final BuiltInQualityProfilesNotification builtInQualityProfilesNotification;
+  private final BuiltInQualityProfilesNotificationSender builtInQualityProfilesNotification;
 
   public RegisterQualityProfiles(BuiltInQProfileRepository builtInQProfileRepository,
     DbClient dbClient, BuiltInQProfileInsert builtInQProfileInsert, BuiltInQProfileUpdate builtInQProfileUpdate,
-    BuiltInQualityProfilesNotification builtInQualityProfilesNotification) {
+    BuiltInQualityProfilesNotificationSender builtInQualityProfilesNotification) {
     this.builtInQProfileRepository = builtInQProfileRepository;
     this.dbClient = dbClient;
     this.builtInQProfileInsert = builtInQProfileInsert;
