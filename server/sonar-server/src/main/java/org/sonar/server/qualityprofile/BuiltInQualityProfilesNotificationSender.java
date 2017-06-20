@@ -34,6 +34,7 @@ public class BuiltInQualityProfilesNotificationSender {
   }
 
   void send() {
+    // TODO get AcriveRuleChange and convert it to BuiltInQualityProfilesNotification -> Notification
     notificationManager.scheduleForSending(
       new Notification(BUILT_IN_QUALITY_PROFILES)
         .setDefaultMessage("This is a test message from SonarQube"));

@@ -58,7 +58,9 @@ public class BuiltInQualityProfilesNotification {
     checkState(BUILT_IN_QUALITY_PROFILES.equals(notification.getType()),
       "Expected notification of type %s but got %s", BUILT_IN_QUALITY_PROFILES, notification.getType());
     BuiltInQualityProfilesNotification notif = new BuiltInQualityProfilesNotification();
-    Integer numberOfProfiles = Integer.valueOf(requireNonNull(notification.getFieldValue(NUMBER_OF_PROFILES)));
+    String numberOfProfilesText = notification.getFieldValue(NUMBER_OF_PROFILES);
+    checkState(numberOfProfilesText != null, "Could not read the built-in quality profile notification");
+    Integer numberOfProfiles = Integer.valueOf(numberOfProfilesText);
     IntStream.rangeClosed(0, numberOfProfiles - 1)
       .mapToObj(index -> new Profile(
         requireNonNull(notification.getFieldValue(index + PROFILE_NAME)),
